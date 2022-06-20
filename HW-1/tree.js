@@ -1,3 +1,4 @@
+///box characters
 const ctx = {
     vertical: '\u2502',
     horizontal: '\u2500',
@@ -11,6 +12,8 @@ let defaultGetName = (obj) => obj["name"];
 let defaultGetChildren = (obj) => obj["items"];
 
 function filterResult(res) {
+
+    ///remove unneccessary |, smooth the picture by replacing some characters
     for (let i = res.length - 1; i>= 0; i--) {
         res[i] = res[i].split('').map((el, ind) => {
             if (el == ctx.vertical && (i + 1 == res.length || 
@@ -50,18 +53,14 @@ function buildTree(obj, getName, getChildren, maxDepth, isFile=false, depth = 1)
 
 function tree(obj, getName = defaultGetName, getChildren = defaultGetChildren) {
     return buildTree(obj, getName, getChildren).then(res => {
-        //console.log(res)
         return filterResult(res).join("\n");
     });
-    //return filterResult(buildTree(obj)).join("\n");
 }
 
 function treeFile(obj, getName = defaultGetName, getChildren = defaultGetChildren, maxDepth=INF) {
     return buildTree(obj, getName, getChildren, maxDepth, true).then(res => {
-        //console.log(res)
         return filterResult(res).join("\n");
     });
-    //return filterResult(buildTree(obj)).join("\n");
 }
 
 module.exports = {
