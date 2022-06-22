@@ -51,37 +51,47 @@ function processArgs() {
 function sendRequest(requestID) {
     console.time(requestID);
     const start = Date.now()
-    let req = http.request('http://localhost:8080', {method: "POST"}, resp => {
-        
-        resp.on('data', (chunk) => {
+    
+    return new Promise((resolve, reject) => {
+        let req = http.request('http://localhost:8080', {method: "POST"}, resp => {
             
-        })
-        resp.on('end', () => {
-            total_time += Date.now() - start;
-            console.timeEnd(requestID );
-            succ++;
+            resp.on('data', (chunk) => {
+                
+            })
+            resp.on('end', () => {
+                total_time += Date.now() - start;
+                console.timeEnd(requestID );
+                succ++;
+            });
+            resolve();
+            resp.on('error', () => {
+                console.log("Request failed with error: ", error);
+            })
         });
-        resp.on('error', () => {
-            console.log("Request failed with error: ", error);
-        })
-    });
 
-    if (body) {
-        req.write(makeBody(5000));
-        req.end();
-    }
-    req.on('error', (e) => {
-        console.log(e);
+        if (body) {
+            req.write(makeBody(5000));
+            req.end();
+        }
+        req.on('error', (e) => {
+            console.log(e);
+        });
     })
+
+
 }
 
 
-processArgs();
+async function main() {
+    processArgs();
 
-for (let i = 1; i <= requests; i++)
-    sendRequest(i);
+    for (let i = 1; i <= requests; i++)
+        await sendRequest(i);
 
-process.on('exit', () => {
-    console.log("bombarded\n");
-    console.log(`${requests} requests, ${succ} successful\nAverage response time: ${total_time/requests} ms.`);
-})
+    process.on('exit', () => {
+        console.log("bombarded\n");
+        console.log(`${requests} requests, ${succ} successful\nAverage response time: ${total_time/requests} ms.`);
+    })
+}
+
+main();
