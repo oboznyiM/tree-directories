@@ -46,9 +46,17 @@ function processArgs() {
     if (!requests) {
         throw "Please, specify the number of requests";
     }
+
+    concurrent = getArg('c', 'Concurrency', 'Number of threads');
+    if (!concurrent) {
+        throw "Please, specify the number of threads";
+    }
 }
 
-function sendRequest(requestID) {
+let id = 0;
+function sendRequest() {
+    id++;
+    let requestID = id;
     console.time(requestID);
     const start = Date.now()
     
@@ -66,6 +74,7 @@ function sendRequest(requestID) {
             resolve();
             resp.on('error', () => {
                 console.log("Request failed with error: ", error);
+                reject(error)
             })
         });
 
@@ -77,17 +86,29 @@ function sendRequest(requestID) {
             console.log(e);
         });
     })
-
-
 }
 
-
-async function main() {
-    processArgs();
-
+async function sendSyncRequests(requests) {
     for (let i = 1; i <= requests; i++)
         await sendRequest(i);
+}
 
+async function main() {
+    try {
+        processArgs();
+    } catch (e) {
+        console.log(e);
+        return;
+    }
+        let promises = []
+    for (let pid = 0; pid < concurrent; pid++) {
+        if (pid < requests % concurrent) {
+            promises.push(sendSyncRequests(requests / concurrent + 1));
+        } else {
+            promises.push(sendSyncRequests(requests / concurrent));
+        } 
+    }
+    Promise.all(promises).catch(e => console.log(e));
     process.on('exit', () => {
         console.log("bombarded\n");
         console.log(`${requests} requests, ${succ} successful\nAverage response time: ${total_time/requests} ms.`);
