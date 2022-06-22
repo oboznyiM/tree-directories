@@ -1,6 +1,5 @@
+#! /usr/bin/env node
 const http = require('http');
-
-
 
 function sendRequest(requestID) {
     console.time(requestID);
