@@ -58,13 +58,11 @@ function sendRequest() {
     id++;
     let requestID = id;
     console.time(requestID);
-    console.log(id);
     const start = Date.now()
     
     return new Promise((resolve, reject) => {
-        console.log("HEre");
-        let req = http.request(url, {method: "POST"}, resp => {
-            console.log(resp);
+        let req = http.request(url {method: "POST"}, resp => {
+            
             resp.on('data', (chunk) => {
                 
             })
@@ -82,6 +80,8 @@ function sendRequest() {
 
         if (body) {
             req.write(makeBody(5000));
+            req.end();
+        } else {
             req.end();
         }
         req.on('error', (e) => {
@@ -102,7 +102,7 @@ async function main() {
         console.log(e);
         return;
     }
-        let promises = [];
+        let promises = []
     for (let pid = 0; pid < concurrent; pid++) {
         if (pid < requests % concurrent) {
             promises.push(sendSyncRequests(requests / concurrent + 1));
