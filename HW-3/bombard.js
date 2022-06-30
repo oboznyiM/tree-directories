@@ -61,7 +61,7 @@ function sendRequest() {
     const start = Date.now()
     
     return new Promise((resolve, reject) => {
-        let req = http.request(url {method: "POST"}, resp => {
+        let req = http.request(url, {method: "POST"}, resp => {
             
             resp.on('data', (chunk) => {
                 
