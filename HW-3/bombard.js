@@ -58,11 +58,13 @@ function sendRequest() {
     id++;
     let requestID = id;
     console.time(requestID);
+    console.log(id);
     const start = Date.now()
     
     return new Promise((resolve, reject) => {
-        let req = http.request('http://localhost:8080', {method: "POST"}, resp => {
-            
+        console.log("HEre");
+        let req = http.request(url, {method: "POST"}, resp => {
+            console.log(resp);
             resp.on('data', (chunk) => {
                 
             })
@@ -100,7 +102,7 @@ async function main() {
         console.log(e);
         return;
     }
-        let promises = []
+        let promises = [];
     for (let pid = 0; pid < concurrent; pid++) {
         if (pid < requests % concurrent) {
             promises.push(sendSyncRequests(requests / concurrent + 1));
