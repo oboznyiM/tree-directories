@@ -1,0 +1,13 @@
+{
+  "name": "bombard",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bombard.js",
+  "bin": "bombard.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node bombard.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
